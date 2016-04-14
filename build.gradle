@@ -1,18 +1,18 @@
 plugins {
-  id 'com.gradle.plugin-publish' version '0.9.2'
-  id 'com.jfrog.bintray' version '1.5'
-  id 'com.palantir.flexversion' version '0.9.2'
-  id 'groovy'
-  id 'idea'
-  id 'nebula.maven-publish' version '4.4.4'
+    id 'com.gradle.plugin-publish' version '0.9.2'
+    id 'com.jfrog.bintray' version '1.5'
+    id 'com.palantir.flexversion' version '0.9.2'
+    id 'groovy'
+    id 'idea'
+    id 'nebula.maven-publish' version '4.4.4'
 }
 
 repositories {
-  jcenter()
+    jcenter()
 }
 
 flexversion {
-  useTags = true
+    useTags = true
 }
 
 group 'com.palantir.configurationresolver'
@@ -20,59 +20,59 @@ version flexVersion()
 sourceCompatibility = 1.7
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  testCompile 'com.netflix.nebula:nebula-test:4.0.0'
+    compile gradleApi()
+    compile localGroovy()
+    testCompile 'com.netflix.nebula:nebula-test:4.0.0'
 }
 
 bintray {
-  user = System.env.BINTRAY_USER
-  key = System.env.BINTRAY_KEY
-  pkg {
-    repo = 'releases'
-    name = 'gradle-configuration-resolver-plugin'
-    userOrg = 'palantir'
-    licenses = ['Apache-2.0']
-    publications = ['nebula']
-  }
+    user = System.env.BINTRAY_USER
+    key = System.env.BINTRAY_KEY
+    pkg {
+        repo = 'releases'
+        name = 'gradle-configuration-resolver-plugin'
+        userOrg = 'palantir'
+        licenses = ['Apache-2.0']
+        publications = ['nebula']
+    }
 }
 bintrayUpload.onlyIf {
-  System.env.BINTRAY_USER && System.env.BINTRAY_KEY && project.version ==~ /\d+\.\d+\.\d+/
+    System.env.BINTRAY_USER && System.env.BINTRAY_KEY && project.version ==~ /\d+\.\d+\.\d+/
 }
 
 pluginBundle {
-  website = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
-  vcsUrl = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
-  description = 'Adds a task that resolves all dependencies in a project.'
-  tags = ['dependencies', 'resolve']
+    website = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
+    vcsUrl = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
+    description = 'Adds a task that resolves all dependencies in a project.'
+    tags = ['dependencies']
 
-  plugins {
-    configurationResolver {
-      id = 'com.palantir.configuration-resolver'
-      displayName = 'Configuration Resolver'
+    plugins {
+        configurationResolver {
+            id = 'com.palantir.configuration-resolver'
+            displayName = 'Configuration Resolver'
+        }
     }
-  }
 }
 publishPlugins.onlyIf {
-  project.version ==~ /\d+\.\d+\.\d+/
+    project.version ==~ /\d+\.\d+\.\d+/
 }
 
 if (System.env.CIRCLE_TEST_REPORTS) {
-  test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, getName())
+    test.reports.junitXml.destination = new File(System.env.CIRCLE_TEST_REPORTS, getName())
 }
 
 if (System.env.CIRCLE_ARTIFACTS) {
-  task copyCiArtifactsToCircle {
-    outputs.upToDateWhen { false }
-    doLast {
-      [
-        file("${buildDir}/reports"), // jacoco, checkstyle, findbugs
-      ].each { src ->
-        copy {
-          from src
-          into "${System.env.CIRCLE_ARTIFACTS}/${project.name}/${src.name}"
+    task copyCiArtifactsToCircle {
+        outputs.upToDateWhen { false }
+        doLast {
+            [
+                file("${buildDir}/reports") // jacoco, checkstyle, findbugs
+            ].each { src ->
+                copy {
+                    from src
+                    into "${System.env.CIRCLE_ARTIFACTS}/${project.name}/${src.name}"
+                }
+            }
         }
-      }
     }
-  }
 }
