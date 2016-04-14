@@ -11,29 +11,30 @@ elsewhere in the buildscript.
 Usage
 -----
 
-Apply the plugin using either the buildscript closure and an `apply plugin`
+Apply the plugin using either the buildscript closure and an `apply plugin`:
 
-    buildscript {
-      repositories {
+```Gradle
+buildscript {
+    repositories {
         maven {
-          url 'https://plugins.gradle.org/m2/'
+            url 'https://plugins.gradle.org/m2/'
         }
-      }
-      dependencies {
-        classpath 'com.palantir.configurationresolver:configuration-resolver:0.1.0'
-      }
     }
-
-    apply plugin: "com.palantir.configuration-resolver"
-
-
-Or use the plugins closure
-
-
-    plugins {
-      id 'com.palantir.configuration-resolver' version '0.1.0'
+    dependencies {
+        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.1.0'
     }
+}
 
+apply plugin: 'com.palantir.configuration-resolver'
+```
+
+Or use the plugins closure:
+
+```Gradle
+plugins {
+    id 'com.palantir.configuration-resolver' version '0.1.0'
+}
+```
 
 This will add the `resolveConfigurations` task to the project.
 
