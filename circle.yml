@@ -16,3 +16,10 @@ general:
 test:
   override:
     - ./gradlew build
+
+deployment:
+  release:
+    tag: /\d+\.\d+\.\d+/
+    commands:
+      - ./gradlew -i bintrayUpload
+      - ./gradlew -i -Dgradle.publish.key=$GRADLE_KEY -Dgradle.publish.secret=$GRADLE_SECRET publishPlugins
