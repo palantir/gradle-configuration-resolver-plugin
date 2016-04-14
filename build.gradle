@@ -4,6 +4,10 @@ plugins {
 
 apply plugin: 'groovy'
 
+repositories {
+  jcenter()
+}
+
 flexversion {
   useTags = true
 }
@@ -13,5 +17,6 @@ version flexVersion()
 dependencies {
   compile gradleApi()
   compile localGroovy()
+  testCompile 'com.netflix.nebula:nebula-test:4.0.0'
 }
 
