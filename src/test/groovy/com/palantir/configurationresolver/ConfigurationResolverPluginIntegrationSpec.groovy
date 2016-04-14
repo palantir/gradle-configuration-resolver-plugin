@@ -81,7 +81,7 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
                 }
 
                 task printAllDeps << {
-                    println "${project.name}: ${project.ext.allDeps}"
+                    println "${project.name}: ${project.configurationResolver.allDeps}"
                 }
             }
         '''.stripIndent()
@@ -118,7 +118,7 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
                 }
 
                 task printAllDeps << {
-                    println "${project.name}: ${project.ext.allDeps}"
+                    println "${project.name}: ${project.configurationResolver.allDeps}"
                 }
             }
         '''.stripIndent()

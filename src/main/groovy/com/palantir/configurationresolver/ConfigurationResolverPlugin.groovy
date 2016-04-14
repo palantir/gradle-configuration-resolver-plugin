@@ -21,12 +21,12 @@ import org.gradle.api.artifacts.DependencyResolveDetails
 class ConfigurationResolverPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        project.ext.allDeps = []
+        project.extensions.create("configurationResolver", ConfigurationResolverPluginExtension)
 
         project.configurations.all {
             resolutionStrategy {
                 eachDependency { DependencyResolveDetails details ->
-                    project.ext.allDeps.add([group: details.target.group, name: details.target.name, version: details.target.version])
+                    project.configurationResolver.allDeps.add([group: details.target.group, name: details.target.name, version: details.target.version])
                 }
             }
         }
