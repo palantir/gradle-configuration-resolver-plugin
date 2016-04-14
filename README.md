@@ -16,22 +16,22 @@ Apply the plugin using either the buildscript closure and an `apply plugin`
     buildscript {
       repositories {
         maven {
-          url "https://plugins.gradle.org/m2/"
+          url 'https://plugins.gradle.org/m2/'
         }
       }
       dependencies {
-        classpath "com.palantir.gradle-configuration-resolver-plugin:0.1.0"
+        classpath 'com.palantir.configurationresolver:configuration-resolver:0.1.0'
       }
     }
 
-    apply plugin: "com.palantir.gradle-configuration-resolver"
+    apply plugin: "com.palantir.configuration-resolver"
 
 
 Or use the plugins closure
 
 
     plugins {
-      id "com.palantir.gradle-configuration-resolver" version "0.1.0"
+      id 'com.palantir.configuration-resolver' version '0.1.0'
     }
 
 
