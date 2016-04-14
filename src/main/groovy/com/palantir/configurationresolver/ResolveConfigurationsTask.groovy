@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.palantir.gradle.configresolve
+package com.palantir.configurationresolver
 
 import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
@@ -20,12 +20,12 @@ import org.gradle.api.tasks.TaskAction
 
 public class ResolveConfigurationsTask extends AbstractTask {
 
-  Project project
+    Project project
 
-  @TaskAction
-  public void resolveAllConfigurations() {
-    project.configurations.all { configuration ->
-      configuration.resolve()
+    @TaskAction
+    public void resolveAllConfigurations() {
+        project.configurations.all { configuration ->
+            configuration.resolve()
+        }
     }
-  }
 }

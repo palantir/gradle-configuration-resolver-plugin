@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.palantir.gradle.configresolve
+package com.palantir.configurationresolver
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -20,18 +20,18 @@ import org.gradle.api.artifacts.DependencyResolveDetails
 
 public class ConfigurationResolverPlugin implements Plugin<Project> {
 
-  void apply(Project project) {
-    project.ext.allDeps = []
+    void apply(Project project) {
+        project.ext.allDeps = []
 
-    project.configurations.all {
-      resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-          alldeps.add([ group : details.target.group, name:details.target.name, version: details.target.version ])
+        project.configurations.all {
+            resolutionStrategy {
+                eachDependency { DependencyResolveDetails details ->
+                    alldeps.add([group: details.target.group, name: details.target.name, version: details.target.version])
+                }
+            }
         }
-      }
-    }
 
-    def task = project.tasks.create("resolveConfigurations", ResolveConfigurationsTask.class)
-    task.project = project
-  }
+        def task = project.tasks.create("resolveConfigurations", ResolveConfigurationsTask.class)
+        task.project = project
+    }
 }
