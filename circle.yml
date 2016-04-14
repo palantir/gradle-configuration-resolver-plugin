@@ -1,0 +1,18 @@
+machine:
+  java:
+    version: oraclejdk7
+  environment:
+    TERM: dumb
+
+checkout:
+  post:
+    - "[[ ! -s \"$(git rev-parse --git-dir)/shallow\" ]] || git fetch --unshallow"
+    - git fetch --tags --all --prune
+
+general:
+  artifacts:
+    - build/libs
+
+test:
+  override:
+    - ./gradlew build
