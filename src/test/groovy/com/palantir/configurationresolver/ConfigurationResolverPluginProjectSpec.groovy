@@ -2,11 +2,11 @@ package com.palantir.configurationresolver
 
 import nebula.test.PluginProjectSpec
 
-class TestResolveConfigurations extends PluginProjectSpec {
+class ConfigurationResolverPluginProjectSpec extends PluginProjectSpec {
 
     @Override
     String getPluginName() {
-        return 'com.palantir.gradle-configuration-resolver'
+        return 'com.palantir.configuration-resolver'
     }
 
 }

@@ -14,13 +14,10 @@
 
 package com.palantir.configurationresolver
 
-import org.gradle.api.Project
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.TaskAction
 
 public class ResolveConfigurationsTask extends AbstractTask {
-
-    Project project
 
     @TaskAction
     public void resolveAllConfigurations() {
@@ -28,4 +25,5 @@ public class ResolveConfigurationsTask extends AbstractTask {
             configuration.resolve()
         }
     }
+
 }

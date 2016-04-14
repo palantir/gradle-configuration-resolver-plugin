@@ -25,6 +25,7 @@ gradle-app.setting
 *.iml
 *.ipr
 *.iws
+out/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
