@@ -1,12 +1,9 @@
 Gradle Configuration Resolver Plugin
 ====================================
 
-This plugin adds a task that will resolve all dependencies in a particular project, and add
-information about the dependencies into a list named `allDeps` in the project object.
-
-This functionality may be useful for ensuring that all dependencies have been resolved into the
-local Gradle cache. The `allDeps` list can also be used to programmatically process dependencies
-elsewhere in the buildscript.
+This plugin adds a `resolveConfigurations` task that resolves all dependencies in a project. This is
+useful for resolving all dependencies to cache in CI environments or for ensuring that all
+dependencies have been resolved into the local Gradle cache for offline development.
 
 Usage
 -----
@@ -21,7 +18,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:0.1.0'
+        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:<version>'
     }
 }
 
@@ -32,7 +29,7 @@ Or use the plugins closure:
 
 ```Gradle
 plugins {
-    id 'com.palantir.configuration-resolver' version '0.1.0'
+    id 'com.palantir.configuration-resolver' version '<version>'
 }
 ```
 
