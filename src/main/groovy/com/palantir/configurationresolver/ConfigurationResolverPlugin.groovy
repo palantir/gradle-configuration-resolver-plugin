@@ -18,20 +18,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.DependencyResolveDetails
 
-public class ConfigurationResolverPlugin implements Plugin<Project> {
+class ConfigurationResolverPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        project.ext.allDeps = []
-
-        project.configurations.all {
-            resolutionStrategy {
-                eachDependency { DependencyResolveDetails details ->
-                    alldeps.add([group: details.target.group, name: details.target.name, version: details.target.version])
-                }
-            }
-        }
-
-        def task = project.tasks.create("resolveConfigurations", ResolveConfigurationsTask.class)
-        task.project = project
+        project.tasks.create("resolveConfigurations", ResolveConfigurationsTask.class)
     }
+
 }
