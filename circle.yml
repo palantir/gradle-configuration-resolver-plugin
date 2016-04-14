@@ -13,6 +13,10 @@ general:
   artifacts:
     - build/libs
 
+dependencies:
+  override:
+    - ./gradlew resolveConfigurations
+
 test:
   override:
     - ./gradlew build
