@@ -14,22 +14,31 @@
 
 package com.palantir.configurationresolver
 
-import nebula.test.IntegrationSpec
-import nebula.test.functional.ExecutionResult
-import org.gradle.api.logging.LogLevel
+import org.gradle.testkit.runner.BuildResult
+import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
+import spock.lang.Specification
 
-class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
+class ConfigurationResolverPluginIntegrationSpec extends Specification {
 
-    private LogLevel logLevel
+    @Rule final TemporaryFolder testProjectDir = new TemporaryFolder()
+    File buildFile
+    File settingsFile
+
     def setup() {
-        logLevel = LogLevel.QUIET
+        buildFile = testProjectDir.newFile('build.gradle')
+        settingsFile = testProjectDir.newFile('settings.gradle')
     }
 
     def 'resolveConfigurations resolves compile and testCompile dependencies'() {
-        logLevel = LogLevel.DEBUG
         buildFile << '''
+            plugins {
+                id 'com.palantir.configuration-resolver'
+            }
+
             apply plugin: 'java'
-            apply plugin: 'com.palantir.configuration-resolver'
 
             repositories {
                 mavenCentral()
@@ -42,17 +51,20 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        BuildResult result = runTasks('resolveConfigurations')
 
         then:
-        result.success
-        result.standardOutput =~ 'Using com.google.guava:guava:19.0'
-        result.standardOutput =~ 'Using junit:junit:4.12'
+        result.task(':resolveConfigurations').outcome == TaskOutcome.SUCCESS
+        result.output =~ 'Using com.google.guava:guava:19.0'
+        result.output =~ 'Using junit:junit:4.12'
     }
 
     def 'resolveConfigurations resolves subproject dependencies'() {
-        logLevel = LogLevel.DEBUG
         buildFile << '''
+            plugins {
+                id 'com.palantir.configuration-resolver'
+            }
+
             subprojects {
                 apply plugin: 'java'
                 apply plugin: 'com.palantir.configuration-resolver'
@@ -76,16 +88,22 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        BuildResult result = runTasks('resolveConfigurations')
 
         then:
-        result.success
-        result.standardOutput =~ 'Using com.google.guava:guava:19.0'
-        result.standardOutput =~ 'Using junit:junit:4.12'
+        result.task(':resolveConfigurations').outcome == TaskOutcome.SUCCESS
+        result.task(':subproject-1:resolveConfigurations').outcome == TaskOutcome.SUCCESS
+        result.task(':subproject-2:resolveConfigurations').outcome == TaskOutcome.SUCCESS
+        result.output =~ 'Using com.google.guava:guava:19.0'
+        result.output =~ 'Using junit:junit:4.12'
     }
 
     def 'applying plugin creates empty project.ext.allDeps list'() {
         buildFile << '''
+            plugins {
+                id 'com.palantir.configuration-resolver'
+            }
+
             subprojects {
                 apply plugin: 'java'
                 apply plugin: 'com.palantir.configuration-resolver'
@@ -113,16 +131,21 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('printAllDeps')
+        BuildResult result = runTasks('printAllDeps')
 
         then:
-        result.success
-        result.standardOutput =~ /subproject-1: \[\]/
-        result.standardOutput =~ /subproject-2: \[\]/
+        result.task(':subproject-1:printAllDeps').outcome == TaskOutcome.SUCCESS
+        result.task(':subproject-2:printAllDeps').outcome == TaskOutcome.SUCCESS
+        result.output =~ /\[system.out\] subproject-1: \[\]/
+        result.output =~ /\[system.out\] subproject-2: \[\]/
     }
 
     def 'running resolveConfigurations populates project.ext.allDeps with dependencies'() {
         buildFile << '''
+            plugins {
+                id 'com.palantir.configuration-resolver'
+            }
+
             subprojects {
                 apply plugin: 'java'
                 apply plugin: 'com.palantir.configuration-resolver'
@@ -150,17 +173,27 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations', 'printAllDeps')
+        BuildResult result = runTasks('resolveConfigurations', 'printAllDeps')
 
         then:
-        result.success
-        result.standardOutput =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
-        result.standardOutput =~ /\[\[group:junit, name:junit, version:4.12\]/
+        println result.tasks
+        result.output =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
+        result.output =~ /\[\[group:junit, name:junit, version:4.12\]/
     }
 
-    @Override
-    protected LogLevel getLogLevel() {
-        return logLevel
+    private BuildResult runTasks(String... tasks) {
+        return GradleRunner.create()
+                .withProjectDir(testProjectDir.root)
+                .withArguments(['--debug'] + tasks.toList())
+                .withPluginClasspath()
+                .withDebug(true)
+                .build()
+    }
+
+    private void addSubproject(String subprojectName, String subprojectBuidFileContents) {
+        File subprojectFolder = testProjectDir.newFolder(subprojectName)
+        subprojectFolder.toPath().resolve('build.gradle').toFile().text = subprojectBuidFileContents
+        settingsFile << "include '${subprojectName}'${System.lineSeparator()}"
     }
 
 }
