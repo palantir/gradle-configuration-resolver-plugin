@@ -22,6 +22,12 @@ public class ResolveConfigurationsTask extends AbstractTask {
     @TaskAction
     public void resolveAllConfigurations() {
         project.configurations.all { configuration ->
+            // New versions of Gradle have unresolvable configurations by default
+            // https://github.com/gradle/gradle/pull/1351
+            if (configuration.metaClass.respondsTo(configuration, "isCanBeResolved") &&
+                !configuration.isCanBeResolved()) {
+              return;
+            }
             configuration.resolve()
         }
     }
