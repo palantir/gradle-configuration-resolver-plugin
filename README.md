@@ -27,7 +27,9 @@ buildscript {
     }
 }
 
-apply plugin: 'com.palantir.configuration-resolver'
+allprojects {
+	apply plugin: 'com.palantir.configuration-resolver'
+}
 ```
 
 Or use the plugins closure:
