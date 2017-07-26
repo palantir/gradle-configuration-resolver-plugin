@@ -27,6 +27,7 @@ buildscript {
     }
 }
 
+// apply this plugin to any projects that should be included. for many, this will be all projects
 allprojects {
 	apply plugin: 'com.palantir.configuration-resolver'
 }
