@@ -18,12 +18,11 @@ Apply the plugin using either the buildscript closure and an `apply plugin`:
 ```Gradle
 buildscript {
     repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
+        maven { url 'https://palantir.bintray.com/releases/' }
     }
+
     dependencies {
-        classpath 'gradle.plugin.com.palantir.configurationresolver:gradle-configuration-resolver-plugin:<version>'
+        classpath 'com.palantir.configurationresolver:gradle-configuration-resolver-plugin:<version>'
     }
 }
 
