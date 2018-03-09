@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.2'
+    id 'com.gradle.plugin-publish' version '0.9.10'
     id 'com.jfrog.bintray' version '1.5'
     id 'com.palantir.configuration-resolver' version '0.0.1'
     id 'com.palantir.flexversion' version '0.9.2'
