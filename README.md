@@ -1,6 +1,9 @@
 Gradle Configuration Resolver Plugin
 ====================================
 
+ [ ![Download](https://api.bintray.com/packages/palantir/releases/gradle-configuration-resolver-plugin/images/download.svg) ](https://bintray.com/palantir/releases/gradle-configuration-resolver-plugin/_latestVersion)
+
+
 This plugin adds a `resolveConfigurations` task that resolves all dependencies in a project. This is
 useful for resolving all dependencies to cache in CI environments or for ensuring that all
 dependencies have been resolved into the local Gradle cache for offline development.
