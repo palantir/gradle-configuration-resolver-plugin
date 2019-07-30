@@ -1,11 +1,11 @@
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.2'
+    id 'com.gradle.plugin-publish' version '0.11.0'
     id 'com.jfrog.bintray' version '1.5'
     id 'com.palantir.configuration-resolver' version '0.0.1'
     id 'com.palantir.git-version' version '0.11.0'
     id 'groovy'
     id 'idea'
-    id 'nebula.maven-publish' version '4.4.4'
+    id 'nebula.maven-publish' version '13.0.0'
 }
 
 repositories {
