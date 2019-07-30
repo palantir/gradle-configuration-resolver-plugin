@@ -42,10 +42,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
 
         then:
-        result.success
         result.standardOutput =~ 'Using com.google.guava:guava:19.0'
         result.standardOutput =~ 'Using junit:junit:4.12'
     }
@@ -76,10 +75,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
 
         then:
-        result.success
         result.standardOutput =~ 'Using com.google.guava:guava:19.0'
         result.standardOutput =~ 'Using junit:junit:4.12'
     }
@@ -94,8 +92,10 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
                     mavenCentral()
                 }
 
-                task printAllDeps << {
-                    println "${project.name}: ${project.configurationResolver.allDeps}"
+                task printAllDeps {
+                    doLast {
+                        println "${project.name}: ${project.configurationResolver.allDeps}"
+                    }
                 }
             }
         '''.stripIndent()
@@ -113,10 +113,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('printAllDeps')
+        ExecutionResult result = runTasksSuccessfully('printAllDeps')
 
         then:
-        result.success
         result.standardOutput =~ /subproject-1: \[\]/
         result.standardOutput =~ /subproject-2: \[\]/
     }
@@ -131,8 +130,10 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
                     mavenCentral()
                 }
 
-                task printAllDeps << {
-                    println "${project.name}: ${project.configurationResolver.allDeps}"
+                task printAllDeps {
+                    doLast {
+                        println "${project.name}: ${project.configurationResolver.allDeps}"
+                    }
                 }
             }
         '''.stripIndent()
@@ -150,10 +151,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations', 'printAllDeps')
+        ExecutionResult result = runTasksSuccessfully('resolveConfigurations', 'printAllDeps')
 
         then:
-        result.success
         result.standardOutput =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
         result.standardOutput =~ /\[\[group:junit, name:junit, version:4.12\]/
     }
