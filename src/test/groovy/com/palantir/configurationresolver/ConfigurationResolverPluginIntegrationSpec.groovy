@@ -84,83 +84,8 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         result.standardOutput =~ 'Using junit:junit:4.12'
     }
 
-    def 'applying plugin creates empty project.ext.allDeps list'() {
-        buildFile << '''
-            subprojects {
-                apply plugin: 'java'
-                apply plugin: 'com.palantir.configuration-resolver'
-
-                repositories {
-                    mavenCentral()
-                }
-
-                task printAllDeps << {
-                    println "${project.name}: ${project.configurationResolver.allDeps}"
-                }
-            }
-        '''.stripIndent()
-
-        addSubproject('subproject-1', '''
-            dependencies {
-                compile 'com.google.guava:guava:19.0'
-            }
-        '''.stripIndent())
-
-        addSubproject('subproject-2', '''
-            dependencies {
-                testCompile 'junit:junit:4.12'
-            }
-        '''.stripIndent())
-
-        when:
-        ExecutionResult result = runTasks('printAllDeps')
-
-        then:
-        result.success
-        result.standardOutput =~ /subproject-1: \[\]/
-        result.standardOutput =~ /subproject-2: \[\]/
-    }
-
-    def 'running resolveConfigurations populates project.ext.allDeps with dependencies'() {
-        buildFile << '''
-            subprojects {
-                apply plugin: 'java'
-                apply plugin: 'com.palantir.configuration-resolver'
-
-                repositories {
-                    mavenCentral()
-                }
-
-                task printAllDeps << {
-                    println "${project.name}: ${project.configurationResolver.allDeps}"
-                }
-            }
-        '''.stripIndent()
-
-        addSubproject('subproject-1', '''
-            dependencies {
-                compile 'com.google.guava:guava:19.0'
-            }
-        '''.stripIndent())
-
-        addSubproject('subproject-2', '''
-            dependencies {
-                testCompile 'junit:junit:4.12'
-            }
-        '''.stripIndent())
-
-        when:
-        ExecutionResult result = runTasks('resolveConfigurations', 'printAllDeps')
-
-        then:
-        result.success
-        result.standardOutput =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
-        result.standardOutput =~ /\[\[group:junit, name:junit, version:4.12\]/
-    }
-
     @Override
     protected LogLevel getLogLevel() {
         return logLevel
     }
-
 }
