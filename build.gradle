@@ -8,6 +8,8 @@ plugins {
     id 'nebula.maven-publish' version '13.0.0'
 }
 
+apply from: "gradle/publish-jar.gradle"
+
 repositories {
     jcenter()
 }
