@@ -42,10 +42,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
 
         then:
-        result.success
         result.standardOutput =~ 'Using com.google.guava:guava:19.0'
         result.standardOutput =~ 'Using junit:junit:4.12'
     }
@@ -76,10 +75,9 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasks('resolveConfigurations')
+        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
 
         then:
-        result.success
         result.standardOutput =~ 'Using com.google.guava:guava:19.0'
         result.standardOutput =~ 'Using junit:junit:4.12'
     }
