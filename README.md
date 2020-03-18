@@ -5,11 +5,6 @@ This plugin adds a `resolveConfigurations` task that resolves all dependencies i
 useful for resolving all dependencies to cache in CI environments or for ensuring that all
 dependencies have been resolved into the local Gradle cache for offline development.
 
-The dependency information is also added to a list named `allDeps` in the `configurationResolver`
-extension container of the project. The `allDeps` list can be used to programmatically process
-dependencies elsewhere in the buildscript. The `allDeps` list is populated when the dependencies are
-resolved.
-
 Usage
 -----
 
