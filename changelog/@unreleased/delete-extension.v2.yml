@@ -1,0 +1,6 @@
+type: break
+break:
+  description: |
+    The `configurationResolver` extension has been deleted, as this was causing noisy stracktraces in newer Gradle.
+  links:
+  - https://github.com/palantir/gradle-configuration-resolver-plugin/pull/37
