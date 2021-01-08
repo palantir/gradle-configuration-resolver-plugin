@@ -14,22 +14,31 @@
 
 package com.palantir.configurationresolver
 
-import nebula.test.IntegrationSpec
+import nebula.test.IntegrationTestKitSpec
 import nebula.test.functional.ExecutionResult
 import org.gradle.api.logging.LogLevel
+import org.gradle.testkit.runner.BuildResult
+import spock.lang.Unroll
 
-class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
+@Unroll
+class ConfigurationResolverPluginIntegrationSpec extends IntegrationTestKitSpec {
+
+    private static final List<String> GRADLE_VERSIONS = ["5.4.1", "6.0.1", "6.7.1"]
 
     private LogLevel logLevel
     def setup() {
+//        debug = true
         logLevel = LogLevel.QUIET
     }
 
-    def 'resolveConfigurations resolves compile and testCompile dependencies'() {
+    def '#gradleVersionNumber: resolveConfigurations resolves compile and testCompile dependencies'() {
+        gradleVersion = gradleVersionNumber
         logLevel = LogLevel.DEBUG
         buildFile << '''
-            apply plugin: 'java'
-            apply plugin: 'com.palantir.configuration-resolver'
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
 
             repositories {
                 mavenCentral()
@@ -42,20 +51,21 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         when:
-        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
+        BuildResult result = runTasks('resolveConfigurations')
 
         then:
-        result.standardOutput =~ 'Using com.google.guava:guava:19.0'
-        result.standardOutput =~ 'Using junit:junit:4.12'
+        result.output =~ 'Using com.google.guava:guava:19.0'
+        result.output =~ 'Using junit:junit:4.12'
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'resolveConfigurations resolves subproject dependencies'() {
+    def '#gradleVersionNumber: resolveConfigurations resolves subproject dependencies'() {
+        gradleVersion = gradleVersionNumber
         logLevel = LogLevel.DEBUG
         buildFile << '''
             subprojects {
-                apply plugin: 'java'
-                apply plugin: 'com.palantir.configuration-resolver'
-
                 repositories {
                     mavenCentral()
                 }
@@ -63,31 +73,42 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         addSubproject('subproject-1', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                compile 'com.google.guava:guava:19.0'
+                implementation 'com.google.guava:guava:19.0'
             }
         '''.stripIndent())
 
         addSubproject('subproject-2', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                testCompile 'junit:junit:4.12'
+                testImplementation 'junit:junit:4.12'
             }
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasksSuccessfully('resolveConfigurations')
+        BuildResult result = runTasks('resolveConfigurations')
 
         then:
-        result.standardOutput =~ 'Using com.google.guava:guava:19.0'
-        result.standardOutput =~ 'Using junit:junit:4.12'
+        result.output =~ 'Using com.google.guava:guava:19.0'
+        result.output =~ 'Using junit:junit:4.12'
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'applying plugin creates empty project.ext.allDeps list'() {
+    def '#gradleVersionNumber: applying plugin creates empty project.ext.allDeps list'() {
+        gradleVersion = gradleVersionNumber
         buildFile << '''
             subprojects {
-                apply plugin: 'java'
-                apply plugin: 'com.palantir.configuration-resolver'
-
                 repositories {
                     mavenCentral()
                 }
@@ -101,31 +122,43 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         addSubproject('subproject-1', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                compile 'com.google.guava:guava:19.0'
+                implementation 'com.google.guava:guava:19.0'
             }
         '''.stripIndent())
 
         addSubproject('subproject-2', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                testCompile 'junit:junit:4.12'
+                testImplementation 'junit:junit:4.12'
             }
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasksSuccessfully('printAllDeps')
+        BuildResult result = runTasks('printAllDeps')
 
         then:
-        result.standardOutput =~ /subproject-1: \[\]/
-        result.standardOutput =~ /subproject-2: \[\]/
+        result.output =~ /subproject-1: \[\]/
+        result.output =~ /subproject-2: \[\]/
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
-    def 'running resolveConfigurations populates project.ext.allDeps with dependencies'() {
+    def '#gradleVersionNumber: running resolveConfigurations populates project.ext.allDeps with dependencies'() {
+        logLevel = LogLevel.WARN
+        gradleVersion = gradleVersionNumber
         buildFile << '''
             subprojects {
-                apply plugin: 'java'
-                apply plugin: 'com.palantir.configuration-resolver'
-
                 repositories {
                     mavenCentral()
                 }
@@ -139,27 +172,41 @@ class ConfigurationResolverPluginIntegrationSpec extends IntegrationSpec {
         '''.stripIndent()
 
         addSubproject('subproject-1', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                compile 'com.google.guava:guava:19.0'
+                implementation 'com.google.guava:guava:19.0'
             }
         '''.stripIndent())
 
         addSubproject('subproject-2', '''
+            plugins {
+                id 'java'
+                id 'com.palantir.configuration-resolver'
+            }
+
             dependencies {
-                testCompile 'junit:junit:4.12'
+                testImplementation 'junit:junit:4.12'
             }
         '''.stripIndent())
 
         when:
-        ExecutionResult result = runTasksSuccessfully('resolveConfigurations', 'printAllDeps')
+        BuildResult result = runTasks('resolveConfigurations', 'printAllDeps')
+        println("result: " + result.output)
 
         then:
-        result.standardOutput =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
-        result.standardOutput =~ /\[\[group:junit, name:junit, version:4.12\]/
+        result.output =~ /\[\[group:com.google.guava, name:guava, version:19.0\]/
+        result.output =~ /\[\[group:junit, name:junit, version:4.12\]/
+
+        where:
+        gradleVersionNumber << GRADLE_VERSIONS
     }
 
     @Override
-    protected LogLevel getLogLevel() {
+    LogLevel getLogLevel() {
         return logLevel
     }
 

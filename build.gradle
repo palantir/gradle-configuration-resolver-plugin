@@ -1,4 +1,5 @@
 plugins {
+    id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.1'
     id 'com.jfrog.bintray' version '1.8.4'
     id 'com.palantir.configuration-resolver' version '0.0.1'
@@ -7,7 +8,6 @@ plugins {
     id 'idea'
     id 'nebula.maven-publish' version '13.0.0'
 }
-
 apply from: "gradle/publish-jar.gradle"
 
 repositories {
@@ -16,14 +16,21 @@ repositories {
 
 group 'com.palantir.configurationresolver'
 version gitVersion()
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    testCompile 'com.netflix.nebula:nebula-test:7.2.5'
+//    compile localGroovy()
+    testImplementation 'com.netflix.nebula:nebula-test:7.10.1'
 }
 
+gradlePlugin {
+    plugins {
+        configurationResolver {
+            id = 'com.palantir.configuration-resolver'
+            implementationClass = 'com.palantir.configurationresolver.ConfigurationResolverPlugin'
+        }
+    }
+}
 pluginBundle {
     website = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
     vcsUrl = 'https://github.com/palantir/gradle-configuration-resolver-plugin'
