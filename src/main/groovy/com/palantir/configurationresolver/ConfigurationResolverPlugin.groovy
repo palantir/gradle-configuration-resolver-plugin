@@ -31,7 +31,7 @@ class ConfigurationResolverPlugin implements Plugin<Project> {
             }
         }
 
-        project.tasks.create("resolveConfigurations", ResolveConfigurationsTask.class)
+        project.tasks.register("resolveConfigurations", ResolveConfigurationsTask.class)
     }
 
 }
