@@ -1,20 +1,11 @@
 type: break
 break:
   description: |-
-    Extend DefaultTask instead of AbstractTask; use lazy task creation
+    Have the ResolveConfigurationsTask extend DefaultTask rather than
+    AbstractTask, resolving a deprecation warning seen in Gradle 6.x.
 
-    I noticed the former causing deprecation warnings indicating this
-    won't be possible in Gradle 7.0.
-
-    I also tried setting up cross-version testing in this repo that
-    would catch said deprecation warning, but it ends up running into
-    other deprecations around certain configurations being resolved
-    (which I suspect will just be flipped over to having isCanBeResolved
-    be false in 7.0, and thus will be ignored by this plugin at that
-    time).
-
-    Other modernizations I did sneak in: Lazy task registration and
-    assuming that Configuration#isCanBeResolved exists (it was added
-    in 3.3).
+    Use lazy task creation to register the resolveConfigurations task.
+    This means a Gradle version of at least 4.9 is now required for
+    this plugin.
   links:
   - https://github.com/palantir/gradle-configuration-resolver-plugin/pull/74
