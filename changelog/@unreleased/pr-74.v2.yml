@@ -1,0 +1,11 @@
+type: break
+break:
+  description: |-
+    Have the ResolveConfigurationsTask extend DefaultTask rather than
+    AbstractTask, resolving a deprecation warning seen in Gradle 6.x.
+
+    Use lazy task creation to register the resolveConfigurations task.
+    This means a Gradle version of at least 4.9 is now required for
+    this plugin.
+  links:
+  - https://github.com/palantir/gradle-configuration-resolver-plugin/pull/74

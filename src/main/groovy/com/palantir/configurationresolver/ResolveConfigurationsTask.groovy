@@ -14,18 +14,17 @@
 
 package com.palantir.configurationresolver
 
-import org.gradle.api.internal.AbstractTask
+import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-public class ResolveConfigurationsTask extends AbstractTask {
+public class ResolveConfigurationsTask extends DefaultTask {
 
     @TaskAction
     public void resolveAllConfigurations() {
         project.configurations.all { configuration ->
             // New versions of Gradle have unresolvable configurations by default
             // https://github.com/gradle/gradle/pull/1351
-            if (configuration.metaClass.respondsTo(configuration, "isCanBeResolved") &&
-                !configuration.isCanBeResolved()) {
+            if (!configuration.isCanBeResolved()) {
               return;
             }
             configuration.resolve()
